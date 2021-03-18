@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchLineTodayData } from '../store/actions/newsAction';
+import Carousel from '../components/Carousel'
 
 export default function Home() {
   const { news, newsList, loading } = useSelector(state => state.news);
@@ -9,13 +10,10 @@ export default function Home() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchLineTodayData());
-    // eslint-disable-next-line
-  }, [])
-  useEffect(() => {
     getList()
     getNewsLine()
     // eslint-disable-next-line
-  },[])
+  }, [news])
   function getNewsLine(params) {
     let result = []
     if (!news) {
@@ -74,6 +72,7 @@ export default function Home() {
         </div>
       </div>
       <div className="col-8 row justify-content-center">
+        <Carousel/>
         { newsLine ?
           newsLine.map(el => {
             return (
