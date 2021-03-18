@@ -1,5 +1,6 @@
 const initialState = {
   news: [],
+  newsList: [],
   loading: false
 }
 
@@ -13,7 +14,8 @@ const newsReducers = (state = initialState, action) => {
     case 'FETCH_ALL_NEWS':
       return {
         ...state,
-        news: action.payload,
+        news: action.payload.data.data.result.categories,
+        newsList: action.payload.data.data.result.categoryList,
         loading: false
       }
     case 'FETCH_ONE_NEWS':

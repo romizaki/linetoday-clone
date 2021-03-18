@@ -19,9 +19,9 @@ export const fetchLineTodayData = () => {
   return async (dispatch) => {
     try {
       dispatch(startFetchNews())
-      const data = await axios.get(baseUrl);
+      const news = await axios.get(baseUrl);
       // console.log(data);
-      dispatch(dispatchData(data))
+      dispatch(dispatchData(news))
     } catch (error) {
       console.log(error);
     }
