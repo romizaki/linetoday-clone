@@ -5,56 +5,97 @@ import { fetchLineTodayData } from '../store/actions/newsAction';
 export default function Home() {
   const { news, newsList, loading } = useSelector(state => state.news);
   const [list, setList] = useState([])
+  const [newsLine, setNewsLine] = useState([])
   const dispatch = useDispatch();
-  const property = {
-    imageUrl: "https://i.pinimg.com/originals/60/f0/99/60f099c176554aea5ff3295583f1baeb.jpg",
-    imageAlt: "Rear view of modern home with pool",
-    beds: 3,
-    baths: 2,
-    title: "Modern home in city center in the heart of historic Los Angeles",
-    formattedPrice: "$1,900.00",
-    reviewCount: 34,
-    rating: 4,
+  useEffect(() => {
+    dispatch(fetchLineTodayData());
+    // eslint-disable-next-line
+  }, [])
+  useEffect(() => {
+    getList()
+    getNewsLine()
+    // eslint-disable-next-line
+  },[])
+  function getNewsLine(params) {
+    let result = []
+    if (!news) {
+      setNewsLine([])
+    }
+    if (!params) {
+      params = 0
+    }
+    if (news[params]) {
+      for (var i in news[params].templates[1].sections[0].articles) {
+        result.push({
+          id: news[params].templates[1].sections[0].articles[i].id,
+          categoryName: news[params].templates[1].sections[0].articles[i].categoryName,
+          title: news[params].templates[1].sections[0].articles[i].title,
+          url: news[params].templates[1].sections[0].articles[i].url.url,
+        })
+      }
+      setNewsLine(result)
+    }
   }
+
   function getList() {
     let result = []
-    for (var i in news) {
+    for (var i in newsList) {
       result.push({
-        id: news[i].id,
-        name: news[i].name
+        id: newsList[i].id,
+        name: newsList[i].name
       })
     }
     setList(result)
   }
-  useEffect(() => {
-    dispatch(fetchLineTodayData());
-    getList()
-    // eslint-disable-next-line
-  }, [])
-  console.log( typeof list,'<<<<' );
-  if (loading) { 
-    return <h1>Loading....</h1> 
+  function changeNews(params) {
+    console.log(params)
+    getNewsLine(params)
+  }
+  if (loading && !list.name) {
+    return <h1>Loading....</h1>
   }
   return (
-    <div class="row mt-5">
-      <div class="col-4">
-          <div className="container">
-            {
-              list.map(el => {
-                return (
+    <div className="row mt-5">
+      <div className="col-4">
+        <div className="container">
+          {
+            list.map((el, index) => {
+              return (
+                <div onClick={() => changeNews(index)}>
                   <div className="card border-dark mb-3" style={{ maxWidth: "18rem" }} key={el.id}>
-                    <div className="card-body">
+                    <div className="card-body" >
                       <h5 className="card-title">{el.name}</h5>
                     </div>
                   </div>
-                )
-              })
-            }
-          </div>
+                </div>
+              )
+            })
+          }
+        </div>
       </div>
-      <div class="col-8">
-        <p>{JSON.stringify(news[1].templates[1].sections[0].articles[0].title)}</p>
+      <div className="col-8 row justify-content-center">
+        { newsLine ?
+          newsLine.map(el => {
+            return (
+              <div className="card text-white bg-secondary mb-1" style={{ maxWidth: "18rem", marginRight: "1rem", height: '12rem' }}>
+                <div className="card-body">
+                  <h5 className="card-title">{el.title}</h5>
+                  {/* <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> */}
+                  <a href={el.url}>
+                    <div className="mb-auto">
+                      <button className="btn btn-success">LINE TODAY</button>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            )
+          }) 
+          :
+          <div>
+            <p>News not found </p>
+          </div> 
+        }
       </div>
-    </div>  
+    </div>
   )
 }

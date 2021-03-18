@@ -1,16 +1,11 @@
 const initialState = {
   news: [],
   newsList: [],
-  loading: false
+  loading: true
 }
 
 const newsReducers = (state = initialState, action) => {
   switch (action.type) {
-    case 'START_FETCH_NEWS':
-      return {
-        ...state,
-        loading: true
-      }
     case 'FETCH_ALL_NEWS':
       return {
         ...state,
@@ -18,13 +13,6 @@ const newsReducers = (state = initialState, action) => {
         newsList: action.payload.data.data.result.categoryList,
         loading: false
       }
-    case 'FETCH_ONE_NEWS':
-      return {
-        ...state,
-        news: action.payload,
-        loading: false
-      }
-  
     default:
       return state
   }
