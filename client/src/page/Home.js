@@ -10,25 +10,28 @@ export default function Home() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchLineTodayData());
+    // eslint-disable-next-line
+  }, [])
+  useEffect(() => {
     getList()
     getNewsLine()
     // eslint-disable-next-line
-  }, [news])
+  },[news])
   function getNewsLine(params) {
     let result = []
     if (!news) {
-      setNewsLine([])
+      setNewsLine(result)
     }
-    if (!params) {
+    else if (!params) {
       params = 0
     }
-    if (news[params]) {
+    else if (news[params]) {
       for (var i in news[params].templates[1].sections[0].articles) {
         result.push({
           id: news[params].templates[1].sections[0].articles[i].id,
           categoryName: news[params].templates[1].sections[0].articles[i].categoryName,
           title: news[params].templates[1].sections[0].articles[i].title,
-          url: news[params].templates[1].sections[0].articles[i].url.url,
+          url: news[params].templates[1].sections[0].articles[i].url ? news[params].templates[1].sections[0].articles[i].url.url : null,
         })
       }
       setNewsLine(result)
@@ -73,13 +76,12 @@ export default function Home() {
       </div>
       <div className="col-8 row justify-content-center">
         <Carousel/>
-        { newsLine ?
+        {newsLine.length >= 1 ?
           newsLine.map(el => {
             return (
               <div className="card text-white bg-secondary mb-1" style={{ maxWidth: "18rem", marginRight: "1rem", height: '12rem' }}>
                 <div className="card-body">
                   <h5 className="card-title">{el.title}</h5>
-                  {/* <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> */}
                   <a href={el.url}>
                     <div className="mb-auto">
                       <button className="btn btn-success">LINE TODAY</button>
